@@ -32,3 +32,5 @@ export const resourceDecisionSix = {
   retry: 'Der Dagoyanische Meister passt genau zu deinem nächsten Zug. Die günstigen Einheiten geben dir früh Optionen.',
   hint: 'Welche Karte kannst du mit fünf Ressourcen noch nicht spielen, während der Dagoyanische Meister dann genau passt?',
 };
+
+export const resourceVariants = [resourceDecision, resourceDecisionSix];

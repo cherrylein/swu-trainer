@@ -37,3 +37,43 @@ export const saveTheStrike = {
     ],
   } satisfies State,
 };
+
+export const woundedGundark = {
+  title: 'Unter Druck entscheiden',
+  goal: 'Zerstöre die Basis. Der Gefräßige Gundark hält keinen Gegenschaden mehr aus.',
+  hint: 'Der Gundark hat bereits 2 Schaden. Nach einem Kampf gegen den Loth-Wolf würde er insgesamt 5 Schaden haben.',
+  success: 'Vernestra beseitigt den Wachposten. So bleibt der bereits verwundete Gundark für die 5 Schaden auf die Basis bereit.',
+  guidance: 'Schau nicht nur auf die Angriffsstärke: Bereits erlittenen Schaden musst du in die Angriffsreihenfolge einplanen.',
+  initial: {
+    baseHp: 5, baseMaxHp: 30, baseName: 'Kommandostelle · Todesstern',
+    baseImageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/SOR/_de/SOR023-de.jpg',
+    baseImageAlt: 'Kommandostelle · Todesstern, deutsche SWU-Basis',
+    baseDamageTokens: [10, 10, 5], log: [],
+    units: [
+      { id: 'vernestra', name: 'Vernestra Rwoh', side: 'player', arena: 'ground', power: 3, hp: 4, damage: 0, ready: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF195-de.jpg', imageAlt: 'Vernestra Rwoh, deutsche SWU-Karte' },
+      { id: 'gundark', name: 'Gefräßiger Gundark', side: 'player', arena: 'ground', power: 5, hp: 4, damage: 2, ready: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF259-de.jpg', imageAlt: 'Gefräßiger Gundark, deutsche SWU-Karte' },
+      { id: 'loth-wolf', name: 'Loth-Wolf', side: 'opponent', arena: 'ground', power: 3, hp: 3, damage: 0, ready: false, sentinel: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF044-de.jpg', imageAlt: 'Loth-Wolf, deutsche SWU-Karte' },
+    ],
+  } satisfies State,
+};
+
+export const woundedVernestra = {
+  title: 'Den letzten Schild lesen',
+  goal: 'Zerstöre die Basis. Vernestra Rwoh ist bereits verwundet.',
+  hint: 'Vernestra überlebt den Kampf gegen den Loth-Wolf nicht. Die Basis braucht anschließend genau 3 Schaden.',
+  success: 'Der Gundark entfernt den Wachposten. Die verwundete Vernestra setzt danach genau den nötigen Schaden auf die Basis.',
+  guidance: 'Eine verwundete Einheit kann immer noch angreifen. Entscheidend ist, ob sie für diesen Kampf überleben muss.',
+  initial: {
+    baseHp: 3, baseMaxHp: 30, baseName: 'Kommandostelle · Todesstern',
+    baseImageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/SOR/_de/SOR023-de.jpg',
+    baseImageAlt: 'Kommandostelle · Todesstern, deutsche SWU-Basis',
+    baseDamageTokens: [10, 10, 5, 2], log: [],
+    units: [
+      { id: 'vernestra', name: 'Vernestra Rwoh', side: 'player', arena: 'ground', power: 3, hp: 4, damage: 2, ready: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF195-de.jpg', imageAlt: 'Vernestra Rwoh, deutsche SWU-Karte' },
+      { id: 'gundark', name: 'Gefräßiger Gundark', side: 'player', arena: 'ground', power: 5, hp: 4, damage: 0, ready: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF259-de.jpg', imageAlt: 'Gefräßiger Gundark, deutsche SWU-Karte' },
+      { id: 'loth-wolf', name: 'Loth-Wolf', side: 'opponent', arena: 'ground', power: 3, hp: 3, damage: 0, ready: false, sentinel: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF044-de.jpg', imageAlt: 'Loth-Wolf, deutsche SWU-Karte' },
+    ],
+  } satisfies State,
+};
+
+export const attackVariants = [puzzle, saveTheStrike, woundedGundark, woundedVernestra];
