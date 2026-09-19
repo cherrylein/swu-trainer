@@ -20,10 +20,10 @@ Die von Vite ausgegebene lokale URL öffnen (normalerweise http://localhost:5173
 - Ein einzelner Worker mit statischen Frontend-Assets und `GET /api/health`; unbekannte API-Pfade liefern JSON mit Status 404, andere Methoden 405.
 - `packages/swu-engine/index.ts`: UI-unabhängige, unveränderlich arbeitende Angriffsfunktionen, Zielprüfung und Puzzle-Ergebnis.
 - `src/puzzles/first-strike.ts`: lokale Puzzle-Daten, getrennt von Regeln und Oberfläche.
-- Spielbrett mit Zielauswahl, Wachposten, gleichzeitigem Kampfschaden, Erschöpfen, Sieg/Fehlschlag, Hinweis, Aktionsprotokoll, Rückgängig und Neustart.
+- Spielbrett mit deutschen Kartenabbildungen, Zielauswahl, Wachposten, gleichzeitigem Kampfschaden, Erschöpfen, Sieg/Fehlschlag, Hinweis, Aktionsprotokoll, Rückgängig und Neustart.
 - Keine Datenbank, Accounts, externe Kartendaten oder zusätzliche Cloud-Dienste. Zustand nur im Arbeitsspeicher; Neuladen setzt zurück.
 
-Die Übungseinheiten sind fiktiv, keine offiziellen Karten. Der Gegner passt nach jedem Angriff. Es gibt keine neue Runde, Handkarten, Ressourcen, Leader, Trigger oder weiteren Schlüsselwörter. Dies ist ein gezieltes Angriffspuzzle, keine vollständige Partie oder Regelengine. Die Lösung: Spähtrupp gegen Wache, anschließend Stoßtrupp gegen Basis. Die Grundregeln zu Angriffen und Wachposten orientieren sich am [offiziellen Quickstart](https://images-cdn.fantasyflightgames.com/filer_public/36/f6/36f6e0a5-a7a9-4cbe-8d73-70e61fe6f548/sw_unlimited_quickstart_rules.pdf).
+Das erste Puzzle nutzt deutsche Kartenbilder aus der vom Nutzer vorgeschlagenen ForceTable-CDN-Quelle. Sie werden extern geladen und nicht ins Repository kopiert. Karteninhalt und Artworks gehören Fantasy Flight Games/Asmodee. Der Gegner passt nach jedem Angriff. Es gibt keine neue Runde, Handkarten, Ressourcen, Leader, Trigger oder weiteren Schlüsselwörter. Dies ist ein gezieltes Angriffspuzzle, keine vollständige Partie oder Regelengine. Die Lösung: Vernestra Rwoh gegen Loth-Wolf, anschließend Gefräßiger Gundark gegen Basis. Die Grundregeln zu Angriffen und Wachposten orientieren sich am [offiziellen Quickstart](https://images-cdn.fantasyflightgames.com/filer_public/36/f6/36f6e0a5-a7a9-4cbe-8d73-70e61fe6f548/sw_unlimited_quickstart_rules.pdf).
 
 ## Prüfen und Produktionsstand ansehen
 

@@ -2,6 +2,7 @@ export type Arena = 'ground' | 'space';
 export type Unit = {
   id: string; name: string; side: 'player' | 'opponent'; arena: Arena;
   power: number; hp: number; damage: number; ready: boolean; sentinel?: boolean;
+  imageUrl?: string; imageAlt?: string;
 };
 export type State = { units: Unit[]; baseHp: number; log: string[] };
 export type Attack = { attackerId: string; targetId: string };

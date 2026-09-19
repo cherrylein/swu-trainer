@@ -20,9 +20,8 @@ export function App() {
       disabled={own ? !unit.ready || outcome !== 'playing' : !targets.includes(unit.id)}
       aria-pressed={own ? selected === unit.id : undefined}
       onClick={() => own ? setSelected(selected === unit.id ? null : unit.id) : hit(unit.id)}>
-      <span className="eyebrow">{unit.sentinel ? 'WACHPOSTEN · SENTINEL' : 'BODENEINHEIT'}</span>
-      <strong>{unit.name}</strong><span className="stats">{unit.power} <small>Angriff</small> / {unit.hp - unit.damage} <small>LP</small></span>
-      <span>{unit.ready ? 'Bereit' : 'Erschöpft'}{unit.damage > 0 ? ` · ${unit.damage} Schaden` : ''}</span>
+      {unit.imageUrl ? <img src={unit.imageUrl} alt={unit.imageAlt ?? unit.name} /> : <strong>{unit.name}</strong>}
+      <span className="card-status">{unit.sentinel ? 'Wachposten · ' : ''}{unit.ready ? 'Bereit' : 'Erschöpft'}{unit.damage > 0 ? ` · ${unit.damage} Schaden` : ''}</span>
     </button>;
   }
   return <main>
@@ -38,12 +37,12 @@ export function App() {
     </section><aside>
       <section className="panel"><p className="eyebrow">DEIN NÄCHSTER SCHRITT</p>
         <h2 role="status">{outcome === 'won' ? 'Puzzle gelöst!' : outcome === 'lost' ? 'Die Basis steht noch.' : selected ? 'Wähle dein Angriffsziel' : 'Wähle eine bereite Einheit'}</h2>
-        <p>{outcome === 'won' ? 'Du hast den Wachposten mit dem Spähtrupp entfernt und die Schlagkraft des Stoßtrupps für die Basis aufgehoben.' : outcome === 'lost' ? 'Keine bereite Einheit übrig. Probiere eine andere Reihenfolge.' : 'Ein Wachposten schützt die Basis. Im Kampf verursachen beide Einheiten gleichzeitig Schaden.'}</p>
+        <p>{outcome === 'won' ? 'Du hast den Loth-Wolf mit Vernestra Rwoh entfernt und die Schlagkraft des Gefräßigen Gundarks für die Basis aufgehoben.' : outcome === 'lost' ? 'Keine bereite Einheit übrig. Probiere eine andere Reihenfolge.' : 'Der Loth-Wolf schützt die Basis mit Wachposten. Im Kampf verursachen beide Einheiten gleichzeitig Schaden.'}</p>
         <div className="actions"><button onClick={() => { setHistory(history.slice(0, -1)); setSelected(null); }} disabled={history.length === 1}>Rückgängig</button><button onClick={() => { setHistory([structuredClone(puzzle.initial)]); setSelected(null); setHint(false); }}>Neu starten</button></div>
         <button className="hint" aria-expanded={hint} onClick={() => setHint(!hint)}>Hinweis {hint ? 'ausblenden' : 'anzeigen'}</button>{hint && <p>{puzzle.hint}</p>}
       </section>
       <section className="panel"><h2>Aktionsprotokoll</h2>{state.log.length ? <ol>{state.log.map((line, i) => <li key={i}>{line}</li>)}</ol> : <p>Noch kein Angriff. Du beginnst.</p>}</section>
     </aside></div>
-    <footer>Inoffizieller Lernprototyp mit fiktiven Übungseinheiten. Nur Angriffe, Wachposten und Schaden; keine vollständige SWU-Regelengine. Der Gegner passt immer, es gibt keine neue Runde.</footer>
+    <footer>Inoffizieller Lernprototyp. Deutsche Kartenbilder werden extern von ForceTable geladen und gehören Fantasy Flight Games/Asmodee. Nur Angriffe, Wachposten und Schaden; keine vollständige SWU-Regelengine. Der Gegner passt immer, es gibt keine neue Runde.</footer>
   </main>;
 }
