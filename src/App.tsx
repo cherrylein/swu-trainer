@@ -64,7 +64,7 @@ function shuffled(cards: HandCard[]) {
 function ResourcePuzzle({ back, startIndex }: { back: () => void; startIndex: number }) {
   const [variantIndex, setVariantIndex] = useState(startIndex);
   const exercise = resourceVariants[variantIndex] as ResourceExercise;
-  const fullHand = (scenario: ResourceExercise) => [...scenario.hand, ...handSupport];
+  const fullHand = (scenario: ResourceExercise) => [...scenario.hand, ...handSupport].slice(0, 6);
   const [hand, setHand] = useState(() => shuffled(fullHand(exercise)));
   const [selected, setSelected] = useState<string[]>([]);
   const [checked, setChecked] = useState(false);
