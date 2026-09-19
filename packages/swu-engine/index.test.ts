@@ -16,6 +16,7 @@ describe('attack puzzle', () => {
     const won = attack(next, { attackerId: 'gundark', targetId: 'base' });
     expect(status(won)).toBe('won');
     expect(won.baseHp).toBe(0);
+    expect(won.baseDamageTokens).toEqual([10, 10, 5, 5]);
     expect(legalTargets(won, 'gundark')).toEqual([]);
   });
   it('loses when the heavy attacker is spent on the guard', () => {

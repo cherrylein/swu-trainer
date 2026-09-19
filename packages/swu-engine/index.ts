@@ -4,7 +4,11 @@ export type Unit = {
   power: number; hp: number; damage: number; ready: boolean; sentinel?: boolean;
   imageUrl?: string; imageAlt?: string;
 };
-export type State = { units: Unit[]; baseHp: number; log: string[] };
+export type State = {
+  units: Unit[]; baseHp: number; log: string[];
+  baseMaxHp?: number; baseName?: string; baseImageUrl?: string; baseImageAlt?: string;
+  baseDamageTokens?: number[];
+};
 export type Attack = { attackerId: string; targetId: string };
 export type Status = 'playing' | 'won' | 'lost';
 
@@ -29,6 +33,7 @@ export function attack(state: State, action: Attack): State {
   attacker.ready = false;
   if (action.targetId === 'base') {
     next.baseHp = Math.max(0, next.baseHp - attacker.power);
+    if (next.baseDamageTokens) next.baseDamageTokens.push(attacker.power);
     next.log.push(`${attacker.name} fügt der Basis ${attacker.power} Schaden zu.`);
   } else {
     const target = next.units.find(u => u.id === action.targetId)!;

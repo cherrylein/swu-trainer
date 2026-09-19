@@ -9,6 +9,7 @@ export function App() {
   const state = history[history.length - 1];
   const outcome = status(state);
   const targets = selected ? legalTargets(state, selected) : [];
+  const baseMaxHp = state.baseMaxHp ?? state.baseHp;
   function hit(targetId: string) {
     if (!selected || !targets.includes(targetId)) return;
     setHistory([...history, attack(state, { attackerId: selected, targetId })]);
@@ -29,7 +30,15 @@ export function App() {
     <section className="intro"><p className="eyebrow">TAKTIK BEGINNT MIT EINER ENTSCHEIDUNG</p><h1>{puzzle.title}</h1><p>{puzzle.goal}</p></section>
     <div className="layout"><section className="board" aria-label="Spielbrett">
       <div className="zone-heading"><h2>Gegner</h2><span>Passt nach jedem deiner Angriffe</span></div>
-      <button className="base" disabled={!targets.includes('base')} onClick={() => hit('base')}><span>GEGNERISCHE BASIS</span><strong>{state.baseHp} <small>LP</small></strong></button>
+      <div className="base-area">
+        <button className="base" disabled={!targets.includes('base')} onClick={() => hit('base')}>
+          {state.baseImageUrl && <img src={state.baseImageUrl} alt={state.baseImageAlt ?? state.baseName ?? 'Gegnerische Basis'} />}
+        </button>
+        <div className="damage-panel" aria-label={`${state.baseName ?? 'Gegnerische Basis'}: ${state.baseHp} von ${baseMaxHp} Lebenspunkten übrig`}>
+          <strong className="base-health">{state.baseHp} <small>/ {baseMaxHp} LP</small></strong>
+          {state.baseDamageTokens?.length ? <div className="damage-tokens" aria-label={`${baseMaxHp - state.baseHp} Schaden auf der gegnerischen Basis`}>{state.baseDamageTokens.map((damage, index) => <span className="damage-token" key={`${damage}-${index}`}>{damage}</span>)}</div> : null}
+        </div>
+      </div>
       <div className="cards">{state.units.filter(u => u.side === 'opponent').map(card)}</div>
       <div className="arena">BODENARENA</div>
       <div className="cards">{state.units.filter(u => u.side === 'player').map(card)}</div>
