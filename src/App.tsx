@@ -7,6 +7,16 @@ type AttackExercise = { title: string; goal: string; hint: string; success: stri
 type ResourceExercise = { title: string; goal: string; context: string; hand: HandCard[]; answer: string[]; selectionCount?: number; success?: string; retry?: string; hint?: string };
 type View = 'menu' | 'attack' | 'resources';
 
+const exhaustedBoardSupport: Unit[] = [
+  { id: 'refugee-support', name: 'Flüchtling des Pfades', side: 'player', arena: 'ground', power: 0, hp: 3, damage: 0, ready: false, sentinel: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF242-de.jpg', imageAlt: 'Flüchtling des Pfades, deutsche SWU-Karte' },
+  { id: 'gifted-support', name: 'Begabtes Straßenkind', side: 'player', arena: 'ground', power: 1, hp: 4, damage: 0, ready: false, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF256-de.jpg', imageAlt: 'Begabtes Straßenkind, deutsche SWU-Karte' },
+  { id: 'gungi-support', name: 'Gungi · Findet sich selbst', side: 'player', arena: 'ground', power: 2, hp: 5, damage: 0, ready: false, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF093-de.jpg', imageAlt: 'Gungi, deutsche SWU-Karte' },
+  { id: 'yaddle-support', name: 'Yaddle · Zeit, das Richtige zu tun', side: 'player', arena: 'ground', power: 2, hp: 4, damage: 0, ready: false, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF045-de.jpg', imageAlt: 'Yaddle, deutsche SWU-Karte' },
+  { id: 'paladin-support', name: 'Paladin-Trainingskorvette', side: 'player', arena: 'space', power: 3, hp: 5, damage: 0, ready: false, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF099-de.jpg', imageAlt: 'Paladin-Trainingskorvette, deutsche SWU-Karte' },
+];
+const handSupport: HandCard[] = exhaustedBoardSupport.slice(1, 4).map(card => ({ id: `hand-${card.id}`, name: card.name, cost: card.name.startsWith('Begabtes') ? 2 : 2, imageUrl: card.imageUrl! }));
+function boardState(initial: State): State { return structuredClone({ ...initial, units: [...initial.units, ...exhaustedBoardSupport] }); }
+
 function Header({ back }: { back?: () => void }) {
   return <header><a href="/" className="brand" onClick={(event) => { event.preventDefault(); back?.(); }}>SWU <span>TRAINER</span></a><span className="badge">AHSOKA · LERNPFAD</span></header>;
 }
@@ -14,7 +24,7 @@ function Header({ back }: { back?: () => void }) {
 function AttackPuzzle({ back, startIndex }: { back: () => void; startIndex: number }) {
   const [variantIndex, setVariantIndex] = useState(startIndex);
   const exercise = attackVariants[variantIndex] as AttackExercise;
-  const [history, setHistory] = useState<State[]>([structuredClone(exercise.initial)]);
+  const [history, setHistory] = useState<State[]>([boardState(exercise.initial)]);
   const [selected, setSelected] = useState<string | null>(null);
   const [hint, setHint] = useState(false);
   const state = history[history.length - 1];
@@ -30,7 +40,7 @@ function AttackPuzzle({ back, startIndex }: { back: () => void; startIndex: numb
   function nextVariant() {
     const nextIndex = (variantIndex + 1) % attackVariants.length;
     setVariantIndex(nextIndex);
-    setHistory([structuredClone(attackVariants[nextIndex].initial)]);
+    setHistory([boardState(attackVariants[nextIndex].initial)]);
     setSelected(null);
     setHint(false);
   }
@@ -43,8 +53,8 @@ function AttackPuzzle({ back, startIndex }: { back: () => void; startIndex: numb
   }
 
   return <main><Header back={back} /><section className="intro"><p className="eyebrow">ANGRIFFSTRAINING · VARIANTE {variantIndex + 1} / {attackVariants.length}</p><h1>{exercise.title}</h1><p>{exercise.goal}</p></section>
-    <div className="layout"><section className="board" aria-label="Spielbrett"><div className="zone-heading"><h2>Gegner</h2><span>Passt nach jedem deiner Angriffe</span></div><div className="base-area"><button className="base" disabled={!targets.includes('base')} onClick={() => hit('base')}>{state.baseImageUrl && <img src={state.baseImageUrl} alt={state.baseImageAlt ?? state.baseName ?? 'Gegnerische Basis'} />}</button><div className="damage-panel" aria-label={`${state.baseName ?? 'Gegnerische Basis'}: ${state.baseHp} von ${baseMaxHp} Lebenspunkten übrig`}><strong className="base-health">{state.baseHp} <small>/ {baseMaxHp} LP</small></strong>{state.baseDamageTokens?.length ? <div className="damage-tokens" aria-label={`${baseMaxHp - state.baseHp} Schaden auf der gegnerischen Basis`}>{state.baseDamageTokens.map((damage, index) => <span className="damage-token" key={`${damage}-${index}`}>{damage}</span>)}</div> : null}</div></div><div className="cards">{state.units.filter(unit => unit.side === 'opponent').map(card)}</div><div className="arena">BODENARENA</div><div className="cards">{state.units.filter(unit => unit.side === 'player').map(card)}</div><div className="zone-heading"><h2>Deine Einheiten</h2><span>{state.units.filter(unit => unit.side === 'player' && unit.ready).length} bereit</span></div></section>
-      <aside><section className="panel"><p className="eyebrow">DEIN NÄCHSTER SCHRITT</p><h2 role="status">{outcome === 'won' ? 'Puzzle gelöst!' : outcome === 'lost' ? 'Die Basis steht noch.' : selected ? 'Wähle dein Angriffsziel' : 'Wähle eine bereite Einheit'}</h2><p>{outcome === 'won' ? exercise.success : outcome === 'lost' ? 'Keine bereite Einheit übrig. Probiere eine andere Reihenfolge.' : exercise.guidance}</p><div className="actions"><button onClick={() => { setHistory(history.slice(0, -1)); setSelected(null); }} disabled={history.length === 1}>Rückgängig</button><button onClick={() => { setHistory([structuredClone(exercise.initial)]); setSelected(null); setHint(false); }}>Neu starten</button></div><button className="primary" onClick={nextVariant}>Nächste Situation</button><button className="hint" aria-expanded={hint} onClick={() => setHint(!hint)}>Hinweis {hint ? 'ausblenden' : 'anzeigen'}</button>{hint && <p>{exercise.hint}</p>}</section><section className="panel"><h2>Aktionsprotokoll</h2>{state.log.length ? <ol>{state.log.map((line, index) => <li key={index}>{line}</li>)}</ol> : <p>Noch kein Angriff. Du beginnst.</p>}</section></aside></div></main>;
+    <div className="layout"><section className="board" aria-label="Spielbrett"><div className="zone-heading"><h2>Gegner</h2><span>Passt nach jedem deiner Angriffe</span></div><div className="base-area"><button className="base" disabled={!targets.includes('base')} onClick={() => hit('base')}>{state.baseImageUrl && <img src={state.baseImageUrl} alt={state.baseImageAlt ?? state.baseName ?? 'Gegnerische Basis'} />}</button><div className="damage-panel" aria-label={`${state.baseName ?? 'Gegnerische Basis'}: ${state.baseHp} von ${baseMaxHp} Lebenspunkten übrig`}><strong className="base-health">{state.baseHp} <small>/ {baseMaxHp} LP</small></strong>{state.baseDamageTokens?.length ? <div className="damage-tokens" aria-label={`${baseMaxHp - state.baseHp} Schaden auf der gegnerischen Basis`}>{state.baseDamageTokens.map((damage, index) => <span className="damage-token" key={`${damage}-${index}`}>{damage}</span>)}</div> : null}</div></div><div className="arena">BODENARENA</div><div className="cards">{state.units.filter(unit => unit.side === 'opponent' && unit.arena === 'ground').map(card)}</div><div className="cards">{state.units.filter(unit => unit.side === 'player' && unit.arena === 'ground').map(card)}</div><div className="arena">RAUMARENA</div><div className="cards">{state.units.filter(unit => unit.side === 'player' && unit.arena === 'space').map(card)}</div><div className="zone-heading"><h2>Deine Einheiten</h2><span>{state.units.filter(unit => unit.side === 'player' && unit.ready).length} bereit · {state.units.filter(unit => unit.side === 'player').length} im Spiel</span></div></section>
+      <aside><section className="panel"><p className="eyebrow">DEIN NÄCHSTER SCHRITT</p><h2 role="status">{outcome === 'won' ? 'Puzzle gelöst!' : outcome === 'lost' ? 'Die Basis steht noch.' : selected ? 'Wähle dein Angriffsziel' : 'Wähle eine bereite Einheit'}</h2><p>{outcome === 'won' ? exercise.success : outcome === 'lost' ? 'Keine bereite Einheit übrig. Probiere eine andere Reihenfolge.' : exercise.guidance}</p><div className="actions"><button onClick={() => { setHistory(history.slice(0, -1)); setSelected(null); }} disabled={history.length === 1}>Rückgängig</button><button onClick={() => { setHistory([boardState(exercise.initial)]); setSelected(null); setHint(false); }}>Neu starten</button></div><button className="primary" onClick={nextVariant}>Nächste Situation</button><button className="hint" aria-expanded={hint} onClick={() => setHint(!hint)}>Hinweis {hint ? 'ausblenden' : 'anzeigen'}</button>{hint && <p>{exercise.hint}</p>}</section><section className="panel"><h2>Aktionsprotokoll</h2>{state.log.length ? <ol>{state.log.map((line, index) => <li key={index}>{line}</li>)}</ol> : <p>Noch kein Angriff. Du beginnst.</p>}</section></aside></div></main>;
 }
 
 function shuffled(cards: HandCard[]) {
@@ -54,7 +64,8 @@ function shuffled(cards: HandCard[]) {
 function ResourcePuzzle({ back, startIndex }: { back: () => void; startIndex: number }) {
   const [variantIndex, setVariantIndex] = useState(startIndex);
   const exercise = resourceVariants[variantIndex] as ResourceExercise;
-  const [hand, setHand] = useState(() => shuffled(exercise.hand));
+  const fullHand = (scenario: ResourceExercise) => [...scenario.hand, ...handSupport];
+  const [hand, setHand] = useState(() => shuffled(fullHand(exercise)));
   const [selected, setSelected] = useState<string[]>([]);
   const [checked, setChecked] = useState(false);
   const selectionCount = exercise.selectionCount ?? 2;
@@ -64,7 +75,7 @@ function ResourcePuzzle({ back, startIndex }: { back: () => void; startIndex: nu
     const nextIndex = (variantIndex + 1) % resourceVariants.length;
     const nextExercise = resourceVariants[nextIndex] as ResourceExercise;
     setVariantIndex(nextIndex);
-    setHand(shuffled(nextExercise.hand));
+    setHand(shuffled(fullHand(nextExercise)));
     setSelected([]);
     setChecked(false);
   }
