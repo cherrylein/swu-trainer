@@ -89,7 +89,7 @@ function Menu({ select }: { select: (view: View) => void }) {
 
 export function App() {
   const [view, setView] = useState<View>('menu');
-  if (view === 'attack') return <AttackPuzzle key="attack" back={() => setView('menu')} startIndex={0} />;
-  if (view === 'resources') return <ResourcePuzzle key="resources" back={() => setView('menu')} startIndex={0} />;
+  if (view === 'attack') return <AttackPuzzle key="attack" back={() => setView('menu')} startIndex={Math.floor(Math.random() * attackVariants.length)} />;
+  if (view === 'resources') return <ResourcePuzzle key="resources" back={() => setView('menu')} startIndex={Math.floor(Math.random() * resourceVariants.length)} />;
   return <Menu select={setView} />;
 }
