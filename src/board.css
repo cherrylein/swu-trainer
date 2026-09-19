@@ -28,24 +28,39 @@
 .damage-token {
   display: grid;
   place-items: center;
-  width: 43px;
-  height: 48px;
-  clip-path: polygon(50% 0, 100% 24%, 100% 75%, 50% 100%, 0 75%, 0 24%);
-  background: linear-gradient(135deg, #ff7665, #a51e22);
-  border: 2px solid #ffbbaf;
+  position: relative;
+  width: 36px;
+  height: 52px;
+  clip-path: polygon(24% 0, 100% 0, 100% 100%, 0 100%, 0 18%);
+  background: linear-gradient(135deg, #f45f52, #a51e22 65%);
+  border: 0;
   color: #fff;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 900;
   text-shadow: 0 1px 2px #521012;
   box-shadow: 0 3px 7px #0008;
 }
 
-.damage-token::after {
-  content: 'SCHADEN';
+.damage-token::before {
+  content: '';
   position: absolute;
-  margin-top: 25px;
+  top: 5px;
+  left: 5px;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #ffb1a8;
+  border-radius: 50%;
+  background: #8f1a20;
+}
+
+.damage-token::after {
+  content: 'DMG';
+  position: absolute;
+  right: 3px;
+  bottom: 4px;
   font-size: 6px;
-  letter-spacing: .6px;
+  letter-spacing: .4px;
+  writing-mode: vertical-rl;
 }
 
 @media (max-width: 460px) {
@@ -53,6 +68,6 @@
   .base { width: 72%; }
   .base-health { font-size: 18px; }
   .damage-tokens { gap: 5px; max-width: 95px; }
-  .damage-token { width: 28px; height: 32px; font-size: 11px; }
-  .damage-token::after { margin-top: 17px; font-size: 4px; }
+  .damage-token { width: 28px; height: 40px; font-size: 12px; }
+  .damage-token::after { font-size: 4px; }
 }
