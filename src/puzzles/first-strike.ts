@@ -76,4 +76,27 @@ export const woundedVernestra = {
   } satisfies State,
 };
 
-export const attackVariants = [puzzle, saveTheStrike, woundedGundark, woundedVernestra];
+function situation(title: string, goal: string, hint: string, success: string, guidance: string, baseHp: number, baseDamageTokens: number[], units: State['units']) {
+  return {
+    title, goal, hint, success, guidance,
+    initial: {
+      baseHp, baseMaxHp: 30, baseName: 'Kommandostelle · Todesstern',
+      baseImageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/SOR/_de/SOR023-de.jpg',
+      baseImageAlt: 'Kommandostelle · Todesstern, deutsche SWU-Basis',
+      baseDamageTokens, log: [], units,
+    } satisfies State,
+  };
+}
+
+const vernestra = (damage = 0) => ({ id: 'vernestra', name: 'Vernestra Rwoh', side: 'player' as const, arena: 'ground' as const, power: 3, hp: 4, damage, ready: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF195-de.jpg', imageAlt: 'Vernestra Rwoh, deutsche SWU-Karte' });
+const gundark = (damage = 0) => ({ id: 'gundark', name: 'Gefräßiger Gundark', side: 'player' as const, arena: 'ground' as const, power: 5, hp: 4, damage, ready: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF259-de.jpg', imageAlt: 'Gefräßiger Gundark, deutsche SWU-Karte' });
+const chirrut = (damage = 0) => ({ id: 'chirrut', name: 'Chirrut Îmwe · Blind, aber nicht taub', side: 'player' as const, arena: 'ground' as const, power: 3, hp: 5, damage, ready: true, sentinel: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF067-de.jpg', imageAlt: 'Chirrut Îmwe, deutsche SWU-Karte' });
+const lothWolf = () => ({ id: 'loth-wolf', name: 'Loth-Wolf', side: 'opponent' as const, arena: 'ground' as const, power: 3, hp: 3, damage: 0, ready: false, sentinel: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF044-de.jpg', imageAlt: 'Loth-Wolf, deutsche SWU-Karte' });
+
+const chirrutMakesRoom = situation('Der standhafte Wegbereiter', 'Zerstöre die Basis mit 5 verbleibenden Lebenspunkten.', 'Chirrut kann den Loth-Wolf besiegen und überlebt dabei. Welche Einheit behältst du für die Basis?', 'Chirrut hält den Loth-Wolf auf. Der Gundark setzt die 5 Schaden auf die ungeschützte Basis.', 'Nutze eine robuste Einheit für den Wachposten und spare die passende Schlagkraft für die Basis.', 5, [10, 10, 5], [chirrut(), gundark(), lothWolf()]);
+const hurtChirrut = situation('Der verletzte Beschützer', 'Zerstöre die gegnerische Basis mit genau zwei Angriffen.', 'Chirrut hat schon 3 Schaden und würde den Kampf gegen den Loth-Wolf nicht überleben.', 'Vernestra räumt den Weg frei. Chirrut kann trotz seiner Verwundung noch die 3 Schaden für die Basis liefern.', 'Verwundete Einheiten dürfen angreifen. Sie müssen nicht jeden Kampf überleben, wenn ihr Angriff den Zug beendet.', 3, [10, 10, 5, 2], [vernestra(), chirrut(3), lothWolf()]);
+const threeUnitPush = situation('Drei Einheiten, ein Fenster', 'Zerstöre eine Basis mit 8 verbleibenden Lebenspunkten.', 'Nach dem Wachposten brauchst du zusammen genau 8 Angriffsstärke für die Basis.', 'Eine 3er-Einheit beseitigt den Wachposten; die andere zusammen mit dem Gundark erreicht exakt 8 Schaden.', 'Bei mehreren Einheiten zählt die Summe der Angriffe nach dem Kampf gegen den Wachposten.', 8, [10, 10, 2], [vernestra(), chirrut(), gundark(), lothWolf()]);
+const finalThree = situation('Drei Schaden reichen', 'Finde den Angriff, der die Basis sofort zerstört.', 'Die Basis hat nur noch 3 Lebenspunkte und wird nicht von einem Wachposten geschützt.', 'Vernestra trifft die Basis exakt für den fehlenden Schaden.', 'Wenn kein Wachposten schützt, darfst du direkt die Basis angreifen. Suche zuerst nach tödlichem Schaden.', 3, [10, 10, 5, 2], [vernestra(), gundark()]);
+const lastUnitStanding = situation('Der letzte Angriff', 'Zerstöre die Basis, obwohl Vernestra bereits 1 Schaden hat.', 'Vernestra würde im Kampf gegen den Loth-Wolf besiegt. Chirrut hält dagegen länger durch.', 'Chirrut entfernt den Wachposten. Der Gundark bleibt für die letzten 5 Schaden bereit.', 'Die Restlebenspunkte deiner Einheiten entscheiden, welche von ihnen den Kampf übernehmen kann.', 5, [10, 10, 5], [vernestra(1), chirrut(), gundark(), lothWolf()]);
+
+export const attackVariants = [puzzle, saveTheStrike, woundedGundark, woundedVernestra, chirrutMakesRoom, hurtChirrut, threeUnitPush, finalThree, lastUnitStanding];

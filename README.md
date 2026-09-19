@@ -20,7 +20,7 @@ Die von Vite ausgegebene lokale URL öffnen (normalerweise http://localhost:5173
 - Ein einzelner Worker mit statischen Frontend-Assets und `GET /api/health`; unbekannte API-Pfade liefern JSON mit Status 404, andere Methoden 405.
 - `packages/swu-engine/index.ts`: UI-unabhängige, unveränderlich arbeitende Angriffsfunktionen, Zielprüfung und Puzzle-Ergebnis.
 - `src/puzzles/`: lokale Puzzle-Daten, getrennt von Regeln und Oberfläche.
-- Zwei Trainingsbereiche mit Variantenpools: vier Angriffssituationen mit Wachposten, unterschiedlichem Basisschaden und verwundeten Einheiten sowie zwei Ressourcenentscheidungen für die Kostenkurve einer Ahsoka-Starthand. Die Handreihenfolge wird bei jeder Ressourcenübung neu gemischt.
+- Zwei Trainingsbereiche mit Variantenpools: neun Angriffssituationen mit Wachposten, unterschiedlichem Basisschaden, verwundeten Einheiten und Chirrut Îmwe sowie vier Ressourcenentscheidungen für die Kostenkurve einer Ahsoka-Starthand. Die Handreihenfolge wird bei jeder Ressourcenübung neu gemischt.
 - Spielbrett mit deutschen Kartenabbildungen, Zielauswahl, Wachposten, gleichzeitigem Kampfschaden, Erschöpfen, Sieg/Fehlschlag, Hinweis, Aktionsprotokoll, Rückgängig und Neustart.
 - Keine Datenbank, Accounts, externe Kartendaten oder zusätzliche Cloud-Dienste. Zustand nur im Arbeitsspeicher; Neuladen setzt zurück.
 
