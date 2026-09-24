@@ -4,10 +4,14 @@ export type Unit = {
   power: number; hp: number; damage: number; ready: boolean; sentinel?: boolean;
   imageUrl?: string; imageAlt?: string;
 };
+export type HandUnit = Omit<Unit, 'side' | 'damage' | 'ready'> & { cost: number };
+export type Resource = { cardId: string; exhausted: boolean };
 export type State = {
   units: Unit[]; baseHp: number; log: string[];
   baseMaxHp?: number; baseName?: string; baseImageUrl?: string; baseImageAlt?: string;
   baseDamageTokens?: number[];
+  hand?: HandUnit[];
+  resources?: Resource[];
 };
 export type Attack = { attackerId: string; targetId: string };
 export type Status = 'playing' | 'won' | 'lost';
@@ -43,5 +47,37 @@ export function attack(state: State, action: Attack): State {
     next.units = next.units.filter(u => u.damage < u.hp);
   }
   if (status(next) === 'playing') next.log.push('Der Gegner passt. Du bist wieder am Zug.');
+  return next;
+}
+
+// Opening setup: choose two of the six hand cards as ready resources.
+export function chooseStartingResources(state: State, cardIds: string[]): State {
+  if (!state.hand || cardIds.length !== 2 || new Set(cardIds).size !== 2 || !cardIds.every(id => state.hand!.some(card => card.id === id))) throw new Error('Wähle genau zwei verschiedene Handkarten als Ressourcen.');
+  const next = structuredClone(state);
+  next.hand = next.hand!.filter(card => !cardIds.includes(card.id));
+  next.resources = [...(next.resources ?? []), ...cardIds.map(cardId => ({ cardId, exhausted: false }))];
+  next.log.push(`${cardIds.length} Karten werden als Ressourcen bereitgelegt.`);
+  return next;
+}
+
+export function playUnit(state: State, cardId: string): State {
+  const card = state.hand?.find(candidate => candidate.id === cardId);
+  const readyResources = state.resources?.filter(resource => !resource.exhausted) ?? [];
+  if (!card) throw new Error('Diese Karte ist nicht auf deiner Hand.');
+  if (readyResources.length < card.cost) throw new Error('Nicht genügend bereite Ressourcen.');
+  const next = structuredClone(state);
+  const payment = next.resources!.filter(resource => !resource.exhausted).slice(0, card.cost);
+  payment.forEach(resource => { resource.exhausted = true; });
+  next.hand = next.hand!.filter(candidate => candidate.id !== cardId);
+  next.units.push({ ...card, side: 'player', damage: 0, ready: true });
+  next.log.push(`${card.name} wird für ${card.cost} Ressourcen gespielt.`);
+  return next;
+}
+
+export function readyCards(state: State): State {
+  const next = structuredClone(state);
+  next.resources?.forEach(resource => { resource.exhausted = false; });
+  next.units.filter(unit => unit.side === 'player').forEach(unit => { unit.ready = true; });
+  next.log.push('Regroup: Deine Ressourcen und Einheiten werden bereitgemacht.');
   return next;
 }
