@@ -17,8 +17,8 @@ export const resourceDecision = {
 
 export const resourceDecisionSix = {
   title: 'Der nächste Meilenstein',
-  goal: 'Wähle genau eine Karte aus deiner Hand als Ressource.',
-  context: 'Du hast vier Ressourcen. Für deinen nächsten Zug möchtest du eine Karte mit fünf Kosten spielen und danach weiter sauber in die Partie wachsen.',
+  goal: 'Wähle genau zwei Karten aus deiner Starthand als Ressourcen.',
+  context: 'Du baust deine ersten zwei Ressourcen auf. Die günstigen Karten sollen deinen Einstieg absichern, während die teuersten Karten später wiederkommen können.',
   hand: [
     { id: 'refugee', name: 'Flüchtling des Pfades', cost: 1, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF242-de.jpg' },
     { id: 'consular-a', name: 'Jedi-Botschafter', cost: 2, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF094-de.jpg' },
@@ -26,11 +26,10 @@ export const resourceDecisionSix = {
     { id: 'dagoyan', name: 'Dagoyanischer Meister', cost: 5, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF115-de.jpg' },
     { id: 'anakin', name: 'Anakin Skywalker · Champion von Mortis', cost: 6, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF070-de.jpg' },
   ] satisfies HandCard[],
-  answer: ['anakin'],
-  selectionCount: 1,
-  success: 'Mit der sechsten Ressource bereitest du künftige Züge vor und behältst den Dagoyanischen Meister für den nächsten Zug mit fünf Ressourcen.',
-  retry: 'Der Dagoyanische Meister passt genau zu deinem nächsten Zug. Die günstigen Einheiten geben dir früh Optionen.',
-  hint: 'Welche Karte kannst du mit fünf Ressourcen noch nicht spielen, während der Dagoyanische Meister dann genau passt?',
+  answer: ['dagoyan', 'anakin'],
+  success: 'Du behältst die günstigen Einheiten für die ersten Züge und nutzt die beiden Karten ab fünf beziehungsweise sechs Kosten als Ressourcen.',
+  retry: 'Für die ersten zwei Ressourcen möchtest du die günstigsten Spieloptionen nicht verlieren.',
+  hint: 'Welche beiden Karten kannst du erst deutlich später ausspielen?',
 };
 
 export const resourceDecisionPresence = {
@@ -53,8 +52,8 @@ export const resourceDecisionPresence = {
 
 export const resourceDecisionCurve = {
   title: 'Die Kurve schließen',
-  goal: 'Wähle eine Karte aus deiner Hand als Ressource.',
-  context: 'Du hast bereits fünf Ressourcen und willst im nächsten Zug eine Einheit für sechs Ressourcen spielen. Deine Hand soll danach weiter Spieloptionen für kleinere Züge behalten.',
+  goal: 'Wähle genau zwei Karten aus deiner Starthand als Ressourcen.',
+  context: 'Deine Hand enthält Spielzüge für eins, zwei und vier Ressourcen. Plane den Einstieg so, dass diese Karten erhalten bleiben.',
   hand: [
     { id: 'refugee', name: 'Flüchtling des Pfades', cost: 1, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF242-de.jpg' },
     { id: 'consular', name: 'Jedi-Botschafter', cost: 2, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF094-de.jpg' },
@@ -62,11 +61,10 @@ export const resourceDecisionCurve = {
     { id: 'dagoyan', name: 'Dagoyanischer Meister', cost: 5, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF115-de.jpg' },
     { id: 'anakin', name: 'Anakin Skywalker · Champion von Mortis', cost: 6, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF070-de.jpg' },
   ] satisfies HandCard[],
-  answer: ['dagoyan'],
-  selectionCount: 1,
-  success: 'Anakin ist der geplante Zug für sechs Ressourcen. Der Dagoyanische Meister ist hier die entbehrlichere Karte.',
-  retry: 'Die Karte für deinen nächsten Sechs-Ressourcen-Zug möchtest du behalten.',
-  hint: 'Welche Karte kostet genau fünf, obwohl du im nächsten Zug eine Karte mit sechs Kosten spielen willst?',
+  answer: ['dagoyan', 'anakin'],
+  success: 'Die Hand behält ihre frühen und mittleren Spielzüge. Dagoyanischer Meister und Anakin kommen erst später ins Spiel.',
+  retry: 'Die günstigeren Karten geben dir in den ersten beiden Runden die meisten Optionen.',
+  hint: 'Welche beiden Karten haben die höchsten Kosten in dieser Hand?',
 };
 
 export const resourceVariants = [resourceDecision, resourceDecisionSix, resourceDecisionPresence, resourceDecisionCurve];
