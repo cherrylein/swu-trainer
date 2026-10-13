@@ -12,3 +12,26 @@
 .stage-key span{display:flex;gap:8px;align-items:center;color:#92a2b4;font-size:11px}
 .stage-key b{display:grid;place-items:center;width:19px;height:19px;border:1px solid #56667a;border-radius:50%;color:#eef3f8;font-size:10px}
 @media(max-width:700px){.family-intro{grid-template-columns:1fr;gap:8px}}
+
+/* Keep question, card context and answer options in one uninterrupted flow. */
+.vader-hero{padding-bottom:18px}
+.vader-main{display:flex;flex-direction:column;gap:16px}
+.vader-main .vader-context{margin:0}
+.own-cards>.eyebrow,.reference-cards>.eyebrow{margin:0 0 8px}
+.own-cards .vader-cards{padding:0 3px 4px}
+.reference-cards{padding:14px 16px;border:1px solid #4b3e3a;border-radius:10px;background:#1d1b20}
+.reference-card-row{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-start}
+.reference-card-item{display:grid;grid-template-columns:170px minmax(180px,1fr);gap:16px;align-items:start;max-width:620px}
+.reference-card-item .trainer-card{min-width:170px;width:170px}
+.card-relevance{margin:8px 0 0;padding:12px 14px;border-left:3px solid #b35a45;background:#171f29;border-radius:0 8px 8px 0;color:#c0cedd;line-height:1.5}
+.motif-panel{border-color:#3d4656;background:#171f29}
+.motif-panel h2{margin:4px 0 8px}
+.motif-panel p:last-child{margin-bottom:0;color:#aebed0}
+.motif-navigation{margin-top:22px;padding-top:18px;border-top:1px solid #303a49}
+.motif-navigation>.eyebrow{margin-bottom:10px}
+.motif-navigation .vader-chapter-strip{padding-bottom:0}
+.family-intro{display:none}
+@media(max-width:700px){
+  .reference-card-item{grid-template-columns:1fr;max-width:100%}
+  .reference-card-item .trainer-card{min-width:155px;width:155px}
+}
