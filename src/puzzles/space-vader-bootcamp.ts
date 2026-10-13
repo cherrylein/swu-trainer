@@ -9,6 +9,7 @@ export type TrainerCard = {
   collectorNumber: string;
   imageUrl: string;
   fallbackImageUrl: string;
+  relevance?: string;
 };
 
 export type DecisionOption = {
@@ -32,6 +33,7 @@ export type SpaceVaderExercise = {
   principle: string;
   transferNote: string;
   cards: TrainerCard[];
+  referenceCards?: TrainerCard[];
   options: DecisionOption[];
 };
 
@@ -41,7 +43,14 @@ const deImage = (set: string, collectorNumber: string) =>
 const fallbackImage = (set: string, collectorNumber: string) =>
   `https://cdn.swu-db.com/images/cards/${set}/${collectorNumber.padStart(3, '0')}.png`;
 
-function card(id: string, nameEn: string, set: string, collectorNumber: string, nameDe?: string): TrainerCard {
+function card(
+  id: string,
+  nameEn: string,
+  set: string,
+  collectorNumber: string,
+  nameDe?: string,
+  relevance?: string,
+): TrainerCard {
   return {
     id,
     nameEn,
@@ -50,6 +59,7 @@ function card(id: string, nameEn: string, set: string, collectorNumber: string, 
     collectorNumber,
     imageUrl: deImage(set, collectorNumber),
     fallbackImageUrl: fallbackImage(set, collectorNumber),
+    relevance,
   };
 }
 
@@ -64,6 +74,22 @@ export const vaderCards = {
   cloneSquadron: card('clone-combat-squadron', 'Clone Combat Squadron', 'JTL', '115'),
   hold: card('hold-for-questioning', 'Hold For Questioning', 'LAW', '217'),
   commandeer: card('commandeer', 'Commandeer', 'JTL', '235'),
+  ig2000: card(
+    'ig-2000',
+    "IG-2000 · Assassin's Aggressor",
+    'JTL',
+    '140',
+    undefined,
+    'Beim Ausspielen: Füge bis zu 3 Einheiten je 1 Schaden zu. 3/4-Weltraumeinheit mit Overwhelm.',
+  ),
+  hyperspaceDisaster: card(
+    'hyperspace-disaster',
+    'Hyperspace Disaster',
+    'SEC',
+    '078',
+    undefined,
+    'Besiegt alle Weltraumeinheiten. Genau deshalb kann zusätzlicher Wert im Space besonders riskant werden.',
+  ),
 } satisfies Record<string, TrainerCard>;
 
 const family = {
@@ -130,7 +156,7 @@ export const spaceVaderExercises: SpaceVaderExercise[] = [
     stage: 'source',
     sourceType: 'turnierfall',
     title: 'Lehrbeispiel: Der Pass verrät etwas',
-    prompt: 'Cad Bane hält seine Starthand und passt als erste Aktion. Du hast nach dem Mulligan keinen Space-Opener, aber Garindan. Was ist Björns Line?',
+    prompt: 'Cad Bane hält seine Starthand und passt als erste Aktion. Du hast nach dem Mulligan keinen Space-Opener, aber Garindan. Was ist hier die beste Line?',
     context: 'Turn 1 · 2 Ressourcen · leeres Board. Der Gegner möchte seine Space-Einheit offenbar nicht vor deinem möglichen Ambusher ausspielen.',
     principle: 'Gegnerisches Verhalten ist Information. Mit Garindan suchst du nicht nur einen Treffer – du störst den gegnerischen Plan.',
     transferNote: 'Das ist der historische Ausgangsfall. Merke dir nicht „Onyx nennen“, sondern warum der Pass eine Information liefert.',
@@ -295,6 +321,7 @@ export const spaceVaderExercises: SpaceVaderExercise[] = [
     principle: 'Entscheide zuerst, welchen Teil des Effekts du gerade maximieren willst: Exhaust oder Discard.',
     transferNote: 'Das historische Motiv ist Aspekt-Zielwahl, nicht der konkrete Name Rancor Keeper.',
     cards: [vaderCards.hold],
+    referenceCards: [vaderCards.ig2000],
     options: [
       { id: 'red', label: 'Den kleineren roten Body wählen.', grade: 'optimal', feedback: 'Du akzeptierst weniger Exhaust-Value, bekommst dafür Zugriff auf die gefährliche rote Handkarte.' },
       { id: 'big', label: 'Immer den größten gegnerischen Body exhausten.', grade: 'error', feedback: 'Damit maximierst du nur einen Teil des Effekts und verfehlst den wichtigeren Discard.' },
@@ -373,6 +400,7 @@ export const spaceVaderExercises: SpaceVaderExercise[] = [
     principle: 'Frage vor jeder Aktion: Welche meiner späteren Aktionen kann der Gegner durch seine nächste Antwort am stärksten entwerten?',
     transferNote: 'Nicht „Squadron immer zuerst“, sondern „schütze die Aktion, deren Wert am leichtesten verloren geht“.',
     cards: [vaderCards.cloneSquadron, vaderCards.victor],
+    referenceCards: [vaderCards.ig2000],
     options: [
       { id: 'squadron', label: 'Clone Combat Squadron zuerst in die Base schicken.', grade: 'optimal', feedback: 'Der große Baseschaden ist sicher. Victor bleibt danach als flexible Antwort erhalten.' },
       { id: 'victor', label: 'Victor zuerst, damit das Squadron maximal gebufft wird.', grade: 'risky', feedback: 'Das ist nur besser, wenn die gegnerische Reaktion das Squadron nicht mehr umlenken oder neutralisieren kann.' },
@@ -524,7 +552,7 @@ export const spaceVaderExercises: SpaceVaderExercise[] = [
     stage: 'source',
     sourceType: 'turnierfall',
     title: 'Lehrbeispiel: Der erste Palpatine',
-    prompt: 'Du ziehst Chancellor Palpatine früh. Was ist Björns Grundregel für die erste Kopie?',
+    prompt: 'Du ziehst Chancellor Palpatine früh. Was ist hier die sinnvolle Grundregel für die erste Kopie?',
     context: 'Palpatine hat Plot und ist vor allem rund um Vaders Deploy-Turn wertvoll.',
     principle: 'Beim Resourcen zählt nicht nur Kartenstärke, sondern ob die Ressource selbst später Zugriff auf die Kartenfunktion ermöglicht.',
     transferNote: 'Das Lehrbeispiel zeigt eine spezielle Rolle: früh resourcen, um die Karte später über Plot zu nutzen.',
@@ -602,11 +630,12 @@ export const spaceVaderExercises: SpaceVaderExercise[] = [
     stage: 'source',
     sourceType: 'turnierfall',
     title: 'Lehrbeispiel: Arena-Switch gegen Space-Wipe',
-    prompt: 'Dein Space-Board ist groß, der Gegner erreicht aber bald das Fenster für einen starken Space-Wipe. Welche Idee beschreibt Björns Arena-Switch?',
+    prompt: 'Dein Space-Board ist groß, der Gegner erreicht aber bald das Fenster für einen starken Space-Wipe. Welche Idee beschreibt hier den sinnvollsten Arena-Switch?',
     context: 'Ein Pilot-Vader konzentriert noch mehr Wert im Space. Ground Vader plus Palpatine verteilt Druck auf zwei Arenen.',
     principle: 'Deploy-Entscheidungen sollen gegnerische Antworten schlechter machen, nicht nur die eigene stärkste Einheit noch größer.',
     transferNote: 'Merke dir nicht „Vader Ground“, sondern „gegen welche Antwort will ich meinen Wert verteilen?“',
     cards: [vaderCards.vader, vaderCards.palpatine],
+    referenceCards: [vaderCards.hyperspaceDisaster],
     options: [
       { id: 'ground', label: 'Vader in den Boden deployen und zusätzlichen Ground-Druck aufbauen.', grade: 'optimal', feedback: 'So zwingst du den Gegner, zwei Arenen zu beantworten statt seinen Space-Wipe maximal effizient zu machen.' },
       { id: 'pilot', label: 'Vader immer als Pilot ins größte Schiff setzen.', grade: 'error', feedback: 'Das konzentriert noch mehr Value genau dort, wo der Gegner bereits die passende Antwort vorbereitet.' },
@@ -722,7 +751,7 @@ export const spaceVaderExercises: SpaceVaderExercise[] = [
     sourceType: 'turnierfall',
     title: 'Lehrbeispiel: Commandeer dreht die Arena',
     prompt: 'Der Gegner kontrolliert zwei relevante ungepilotierte Schiffe. Du hast einen eigenen kleinen Space-Body und Commandeer. Welche Art Line macht Commandeer hier stark?',
-    context: 'Im beschriebenen Match übernimmt Björn ein gegnerisches Schiff, macht es bereit und benutzt es, um zusammen mit dem eigenen Board ein weiteres gegnerisches Schiff zu traden.',
+    context: 'Im zugrunde liegenden Turnierbeispiel wird ein gegnerisches Schiff übernommen, bereitgemacht und anschließend genutzt, um zusammen mit dem eigenen Board ein weiteres gegnerisches Schiff zu traden.',
     principle: 'Eine spezialisierte Sideboard-Karte ist stark, wenn der gegnerische Archetyp zuverlässig genau die Targets liefert, die ihren Effekt maximieren.',
     transferNote: 'Merke dir nicht „Blue Ace + Hauler“, sondern „Commandeer braucht hochwertige ungepilotierte Vehicle-Targets“.',
     cards: [vaderCards.commandeer],
