@@ -49,3 +49,7 @@ Beim tatsächlichen Deployment wird der Worker `swu-trainer` im angemeldeten Clo
 Optional nach dem Push: das Repository in Cloudflare unter Workers & Pages importieren, Projektwurzel `/`, Build-Befehl `npm run cf-typegen && npm run build`, Deploy-Befehl `npx wrangler deploy`. Abhängigkeiten werden mit npm anhand des Lockfiles installiert. Die Git-Verbindung muss im Cloudflare-Konto eingerichtet werden; dieses Projekt erstellt sie nicht automatisch.
 
 Grundlage: [Cloudflare React + Vite](https://developers.cloudflare.com/workers/framework-guides/web-apps/react/). Noch kein Live-Deployment eingerichtet.
+
+## Automatisches Deployment
+
+Der Produktions-Branch `main` ist mit Cloudflare Workers Builds verbunden. Jeder neue Commit auf `main` soll automatisch gebaut und als `swu-trainer` bereitgestellt werden.
