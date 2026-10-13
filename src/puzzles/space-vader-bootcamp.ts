@@ -39,17 +39,17 @@ function card(id: string, nameEn: string, set: string, collectorNumber: string, 
 // Deutsche Namen werden nur dort hinterlegt, wo sie sicher bekannt sind; ansonsten
 // zeigt die App den englischen Titel zusammen mit dem deutschen Kartenbild.
 export const vaderCards = {
-  garindan: card('garindan', 'Garindan · Information Broker', 'SEC', '696', 'Garindan · Informationshändler'),
-  palpatine: card('palpatine', 'Chancellor Palpatine · I Am the Senate', 'SEC', '592', 'Kanzler Palpatine · Ich bin der Senat'),
+  garindan: card('garindan', 'Garindan · Information Broker', 'SEC', '186', 'Garindan · Informationshändler'),
+  palpatine: card('palpatine', 'Chancellor Palpatine · I Am the Senate', 'SEC', '082', 'Kanzler Palpatine · Ich bin der Senat'),
   galen: card('galen', 'Galen Erso · Destroying His Creation', 'LAW', '233'),
-  boba: card('boba-pilot', 'Boba Fett · Feared Bounty Hunter', 'JTL', '687'),
+  boba: card('boba-pilot', 'Boba Fett · Feared Bounty Hunter', 'JTL', '189'),
   elzar: card('elzar', 'Elzar Mann · Haunted by a Vision', 'ASH', '224'),
-  victor: card('victor-leader', 'Victor Leader · Leading from the Front', 'JTL', '583'),
-  cloneSquadron: card('clone-combat-squadron', 'Clone Combat Squadron', 'JTL', '613'),
+  victor: card('victor-leader', 'Victor Leader · Leading from the Front', 'JTL', '085'),
+  cloneSquadron: card('clone-combat-squadron', 'Clone Combat Squadron', 'JTL', '115'),
   hold: card('hold-for-questioning', 'Hold For Questioning', 'LAW', '217'),
   noConflict: card('there-is-no-conflict', 'There Is No Conflict', 'ASH', '199'),
   craving: card('craving-power', 'Craving Power', 'LOF', '593'),
-  commandeer: card('commandeer', 'Commandeer', 'JTL', '733'),
+  commandeer: card('commandeer', 'Commandeer', 'JTL', '235'),
   watchThis: card('watch-this', 'Watch This', 'IBH', '052'),
   remnant: card('remnant-lookouts', 'Remnant Lookouts', 'ASH', '220'),
 } satisfies Record<string, TrainerCard>;
