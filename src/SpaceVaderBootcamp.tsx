@@ -37,9 +37,7 @@ function CardFigure({ card, onOpen }: { card: TrainerCard; onOpen: (card: Traine
         onError={(event) => {
           const img = event.currentTarget;
           const fallback = img.dataset.fallback;
-          if (fallback && img.src !== fallback) {
-            img.src = fallback;
-          }
+          if (fallback && img.src !== fallback) img.src = fallback;
         }}
       />
     </button>
@@ -69,6 +67,12 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
   );
 
   const readiness = useMemo(() => {
+    const earned = activeResults.reduce((sum, result) => sum + scoreFor[result.grade], 0);
+    const possible = spaceVaderExercises.length * 3;
+    return possible ? Math.round((earned / possible) * 100) : 0;
+  }, [activeResults]);
+
+  const accuracy = useMemo(() => {
     if (!activeResults.length) return 0;
     return Math.round((activeResults.reduce((sum, result) => sum + scoreFor[result.grade], 0) / (activeResults.length * 3)) * 100);
   }, [activeResults]);
@@ -77,9 +81,8 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
     return spaceVaderFamilies.map(item => {
       const exercises = spaceVaderExercises.filter(exerciseItem => exerciseItem.familyId === item.id);
       const answered = exercises.flatMap(exerciseItem => results[exerciseItem.id] ? [results[exerciseItem.id]] : []);
-      const score = answered.length
-        ? Math.round((answered.reduce((sum, result) => sum + scoreFor[result.grade], 0) / (answered.length * 3)) * 100)
-        : 0;
+      const earned = answered.reduce((sum, result) => sum + scoreFor[result.grade], 0);
+      const score = exercises.length ? Math.round((earned / (exercises.length * 3)) * 100) : 0;
       return { ...item, answered: answered.length, total: exercises.length, score };
     });
   }, [results]);
@@ -139,34 +142,32 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
       </div>
     </section>
 
-    <section className="family-intro">
-      <div>
-        <p className="eyebrow">TRAININGSMOTIV</p>
-        <h2>{exercise.familyTitle}</h2>
-      </div>
-      <p>{exercise.familyGoal}</p>
-    </section>
-
-    <div className="vader-chapter-strip" aria-label="Trainingsmotive">
-      {familyScores.map(item => <button key={item.id} className={item.id === exercise.familyId ? 'active' : ''} onClick={() => jumpToFamily(item.id)}>
-        <strong>{item.title}</strong>
-        <small>{item.answered}/{item.total} · {item.score}%</small>
-      </button>)}
-    </div>
-
     <section className="vader-grid">
       <div className="vader-main">
         <div className="vader-meta">
           <span>{exercise.chapter}</span>
           <span className={`stage-${exercise.stage}`}>{stageLabel[exercise.stage]}</span>
-          <span>{exercise.sourceType === 'turnierfall' ? 'Aus Björns Match' : exercise.sourceType === 'gegenbeispiel' ? 'Bewusste Ausnahme' : 'Neu abgeleitete Situation'}</span>
+          <span>{exercise.sourceType === 'turnierfall' ? 'Praxisbeispiel' : exercise.sourceType === 'gegenbeispiel' ? 'Bewusste Ausnahme' : 'Neue Situation'}</span>
         </div>
 
         <p className="vader-context">{exercise.context}</p>
 
-        {exercise.cards.length ? <div className="vader-cards">
-          {exercise.cards.map(card => <CardFigure card={card} onOpen={setFocusCard} key={card.id} />)}
-        </div> : null}
+        {exercise.referenceCards?.length ? <section className="reference-cards">
+          <p className="eyebrow">FÜR DIE ENTSCHEIDUNG RELEVANT</p>
+          <div className="reference-card-row">
+            {exercise.referenceCards.map(card => <div className="reference-card-item" key={card.id}>
+              <CardFigure card={card} onOpen={setFocusCard} />
+              {card.relevance ? <p className="card-relevance">{card.relevance}</p> : null}
+            </div>)}
+          </div>
+        </section> : null}
+
+        {exercise.cards.length ? <section className="own-cards">
+          <p className="eyebrow">{exercise.referenceCards?.length ? 'DEINE RELEVANTEN KARTEN' : 'RELEVANTE KARTEN'}</p>
+          <div className="vader-cards">
+            {exercise.cards.map(card => <CardFigure card={card} onOpen={setFocusCard} key={card.id} />)}
+          </div>
+        </section> : null}
 
         <div className="decision-options" aria-label="Antwortmöglichkeiten">
           {exercise.options.map(option => {
@@ -180,16 +181,22 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
       </div>
 
       <aside>
+        <section className="panel motif-panel">
+          <p className="eyebrow">TRAININGSMOTIV</p>
+          <h2>{exercise.familyTitle}</h2>
+          <p>{exercise.familyGoal}</p>
+        </section>
+
         <section className="panel vader-feedback">
           <p className="eyebrow">COACHING</p>
-          <h2>{selected ? labelFor[selected.grade] : 'Erkenne das Motiv'}</h2>
+          <h2>{selected ? labelFor[selected.grade] : 'Triff deine Entscheidung'}</h2>
           <p>{selected
             ? selected.feedback
             : exercise.stage === 'source'
-              ? 'Das ist das Lehrbeispiel. Entscheidend ist nicht, die alte Partie zu merken, sondern den Grund hinter der Entscheidung.'
+              ? 'Das ist das Lehrbeispiel. Entscheidend ist der Grund hinter der Entscheidung – nicht die konkrete alte Spielsituation.'
               : exercise.stage === 'transfer'
-                ? 'Die Situation wurde verändert. Nutze das Prinzip – nicht die konkrete Lösung aus dem Lehrbeispiel.'
-                : 'Achtung: Diese Aufgabe prüft, wann die gelernte Heuristik gerade NICHT gilt.'}</p>
+                ? 'Die Situation wurde verändert. Nutze das Prinzip und entscheide neu.'
+                : 'Diese Aufgabe prüft, wann die gelernte Heuristik gerade nicht gilt.'}</p>
 
           {selected ? <>
             <div className="principle">
@@ -211,8 +218,8 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
           <h2>Dein Lernstand</h2>
           <div className="vader-stats">
             <span><strong>{activeResults.length}</strong> / {spaceVaderExercises.length} beantwortet</span>
-            <span><strong>{activeResults.filter(result => result.grade === 'optimal').length}</strong> optimal</span>
-            <span><strong>{readiness}%</strong> Readiness</span>
+            <span><strong>{accuracy}%</strong> Trefferqualität</span>
+            <span><strong>{readiness}%</strong> Readiness gesamt</span>
           </div>
           <div className="stage-key">
             <span><b>1</b> Lehrbeispiel verstehen</span>
@@ -224,6 +231,16 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
       </aside>
     </section>
 
+    <section className="motif-navigation">
+      <p className="eyebrow">TRAININGSMOTIVE</p>
+      <div className="vader-chapter-strip" aria-label="Trainingsmotive">
+        {familyScores.map(item => <button key={item.id} className={item.id === exercise.familyId ? 'active' : ''} onClick={() => jumpToFamily(item.id)}>
+          <strong>{item.title}</strong>
+          <small>{item.answered}/{item.total} · {item.score}%</small>
+        </button>)}
+      </div>
+    </section>
+
     {focusCard ? <div className="card-lightbox" role="dialog" aria-modal="true" aria-label={focusCard.nameDe ?? focusCard.nameEn} onClick={() => setFocusCard(null)}>
       <button className="lightbox-close" onClick={() => setFocusCard(null)}>Schließen</button>
       <img
@@ -233,9 +250,7 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
         onError={(event) => {
           const img = event.currentTarget;
           const fallback = img.dataset.fallback;
-          if (fallback && img.src !== fallback) {
-            img.src = fallback;
-          }
+          if (fallback && img.src !== fallback) img.src = fallback;
         }}
         onClick={event => event.stopPropagation()}
       />
