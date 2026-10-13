@@ -8,6 +8,7 @@ export type TrainerCard = {
   set: string;
   collectorNumber: string;
   imageUrl: string;
+  fallbackImageUrl: string;
 };
 
 export type DecisionOption = {
@@ -37,8 +38,19 @@ export type SpaceVaderExercise = {
 const deImage = (set: string, collectorNumber: string) =>
   `https://d1n2ba7uw8bkm1.cloudfront.net/swu/${set}/_de/${set}${collectorNumber.padStart(3, '0')}-de.jpg`;
 
+const fallbackImage = (set: string, collectorNumber: string) =>
+  `https://cdn.swu-db.com/images/cards/${set}/${collectorNumber.padStart(3, '0')}.png`;
+
 function card(id: string, nameEn: string, set: string, collectorNumber: string, nameDe?: string): TrainerCard {
-  return { id, nameEn, nameDe, set, collectorNumber, imageUrl: deImage(set, collectorNumber) };
+  return {
+    id,
+    nameEn,
+    nameDe,
+    set,
+    collectorNumber,
+    imageUrl: deImage(set, collectorNumber),
+    fallbackImageUrl: fallbackImage(set, collectorNumber),
+  };
 }
 
 export const vaderCards = {
