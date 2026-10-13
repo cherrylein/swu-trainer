@@ -30,7 +30,18 @@ function CardFigure({ card, onOpen }: { card: TrainerCard; onOpen: (card: Traine
   const title = card.nameDe ?? card.nameEn;
   return <figure className="trainer-card">
     <button className="trainer-card-image" onClick={() => onOpen(card)} aria-label={`${title} vergrößern`}>
-      <img src={card.imageUrl} alt={`${title}, deutsche SWU-Karte`} />
+      <img
+        src={card.imageUrl}
+        data-fallback={card.fallbackImageUrl}
+        alt={`${title}, SWU-Karte`}
+        onError={(event) => {
+          const img = event.currentTarget;
+          const fallback = img.dataset.fallback;
+          if (fallback && img.src !== fallback) {
+            img.src = fallback;
+          }
+        }}
+      />
     </button>
     <figcaption>
       <strong>{title}</strong>
@@ -215,7 +226,19 @@ export function SpaceVaderBootcamp({ back }: { back: () => void }) {
 
     {focusCard ? <div className="card-lightbox" role="dialog" aria-modal="true" aria-label={focusCard.nameDe ?? focusCard.nameEn} onClick={() => setFocusCard(null)}>
       <button className="lightbox-close" onClick={() => setFocusCard(null)}>Schließen</button>
-      <img src={focusCard.imageUrl} alt={focusCard.nameDe ?? focusCard.nameEn} onClick={event => event.stopPropagation()} />
+      <img
+        src={focusCard.imageUrl}
+        data-fallback={focusCard.fallbackImageUrl}
+        alt={focusCard.nameDe ?? focusCard.nameEn}
+        onError={(event) => {
+          const img = event.currentTarget;
+          const fallback = img.dataset.fallback;
+          if (fallback && img.src !== fallback) {
+            img.src = fallback;
+          }
+        }}
+        onClick={event => event.stopPropagation()}
+      />
     </div> : null}
   </main>;
 }
