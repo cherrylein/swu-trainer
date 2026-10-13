@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { attack, legalTargets, status, type State, type Unit } from '../packages/swu-engine';
 import { attackVariants } from './puzzles/first-strike';
 import { resourceVariants, type HandCard } from './puzzles/resource-decision';
+import { SpaceVaderBootcamp } from './SpaceVaderBootcamp';
+import { spaceVaderExercises } from './puzzles/space-vader-bootcamp';
 
 type AttackExercise = { title: string; goal: string; hint: string; success: string; guidance: string; initial: State };
 type ResourceExercise = { title: string; goal: string; context: string; hand: HandCard[]; answer: string[]; selectionCount?: number; success?: string; retry?: string; hint?: string };
-type View = 'menu' | 'attack' | 'resources';
+type View = 'menu' | 'attack' | 'resources' | 'space-vader';
 
 const exhaustedBoardSupport: Unit[] = [
   { id: 'refugee-support', name: 'Flüchtling des Pfades', side: 'player', arena: 'ground', power: 0, hp: 3, damage: 0, ready: false, sentinel: true, imageUrl: 'https://d1n2ba7uw8bkm1.cloudfront.net/swu/LOF/_de/LOF242-de.jpg', imageAlt: 'Flüchtling des Pfades, deutsche SWU-Karte' },
@@ -84,12 +86,13 @@ function ResourcePuzzle({ back, startIndex }: { back: () => void; startIndex: nu
 }
 
 function Menu({ select }: { select: (view: View) => void }) {
-  return <main><Header /><section className="intro"><p className="eyebrow">DEIN DECK · AHSOKA TANO</p><h1>Was möchtest du üben?</h1><p>Jeder Bereich enthält mehrere Situationen; mit „Nächste Situation“ oder „Nächste Hand“ wechselst du direkt weiter.</p></section><section className="scenario-list"><button className="scenario" onClick={() => select('attack')}><span className="scenario-number">{attackVariants.length}</span><span><strong>Angriffe planen</strong><small>Wachposten · Schaden · Angriffsreihenfolge</small></span><b>Trainieren</b></button><button className="scenario" onClick={() => select('resources')}><span className="scenario-number">{resourceVariants.length}</span><span><strong>Ressourcen planen</strong><small>Eröffnung · Kostenkurve · Handreihenfolge</small></span><b>Trainieren</b></button></section></main>;
+  return <main><Header /><section className="intro"><p className="eyebrow">DEIN DECK · AHSOKA TANO</p><h1>Was möchtest du üben?</h1><p>Jeder Bereich enthält mehrere Situationen; mit „Nächste Situation“ oder „Nächste Hand“ wechselst du direkt weiter.</p></section><section className="scenario-list"><button className="scenario" onClick={() => select('attack')}><span className="scenario-number">{attackVariants.length}</span><span><strong>Angriffe planen</strong><small>Wachposten · Schaden · Angriffsreihenfolge</small></span><b>Trainieren</b></button><button className="scenario" onClick={() => select('resources')}><span className="scenario-number">{resourceVariants.length}</span><span><strong>Ressourcen planen</strong><small>Eröffnung · Kostenkurve · Handreihenfolge</small></span><b>Trainieren</b></button><button className="scenario vader-scenario" onClick={() => select('space-vader')}><span className="scenario-number">{spaceVaderExercises.length}</span><span><strong>Space Vader Bootcamp</strong><small>Hand Reading · Off-Curve · Initiative · Sequencing · Sideboard</small></span><b>Utrecht-Training</b></button></section></main>;
 }
 
 export function App() {
   const [view, setView] = useState<View>('menu');
   if (view === 'attack') return <AttackPuzzle key="attack" back={() => setView('menu')} startIndex={Math.floor(Math.random() * attackVariants.length)} />;
   if (view === 'resources') return <ResourcePuzzle key="resources" back={() => setView('menu')} startIndex={Math.floor(Math.random() * resourceVariants.length)} />;
+  if (view === 'space-vader') return <SpaceVaderBootcamp back={() => setView('menu')} />;
   return <Menu select={setView} />;
 }
